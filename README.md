@@ -2,6 +2,8 @@
 
 - We use the PPF to do the object recognition feature and hash table for 3D descriptor.
 - By utilizing the [point cloud library](http://pointclouds.org/), we now only could run the program on Win7 visual studio 2010.
+- **Author : Cheng-Hei Wu**
+- **Maintainer : [Howard Chen](https://github.com/s880367), [Yueh Chuan](https://github.com/YuehChuan), [Yu-Hsien Chang](https://github.com/TacoHsien)**
 
 ## Requirment
 - PCL 1.7.0

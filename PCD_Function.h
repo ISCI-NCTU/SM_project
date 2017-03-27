@@ -61,7 +61,7 @@ public:
 	int Target;
 	float BaseObject_EulerAngle[3];
 	pcl::PointXYZ Arm_PickPoint;
-	int IndexOfOriginalPosition[3];
+	int IndexOfOriginalPosition[5];
 	int NoneZeroPosition;
 };
 

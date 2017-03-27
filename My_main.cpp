@@ -29,7 +29,7 @@ Eigen::Matrix< float, 4, 1 > Camera_ObjectGraspPoint;
 int WhichOneBeGrasp = 0;
 
 /*
- *   ÂªÂ«Â¥Ã³
+ *   ª«¥ó
  */
 	WgSocket MySocket;
 	VotingSchemePoseEstimationClass PoseEstimationObj;
@@ -37,7 +37,7 @@ int WhichOneBeGrasp = 0;
 	KinectClass KinectObj;
 
 /*
- *   Â¥Ã¾Â°Ã¬Â¨Ã§Â¼Ã†
+ *   ¥ş°ì¨ç¼Æ
  */
 	bool CreateClient(WgSocket &clientSocket);
 	static unsigned __stdcall StartSocket_Thread(void * pThis);
@@ -49,11 +49,11 @@ int WhichOneBeGrasp = 0;
 	void PrintPosition();
 
 /*
- *  ------------ SocketÂ¸ÃªÂ®Ã† -----------------
+ *  ------------ Socket¸ê®Æ -----------------
  *
- *  KukaState = 0 -> ÂµÂ¥Â«ÃKUKAÂ¨Ã¬Â¹FÃ‚^Â¨ÃºÂ¼vÂ¹Â³Ã‚I
- *	KukaState = 1 -> Â¼vÂ¹Â³Ã‚^Â¨Ãº+Â«ÂºÂºAÂ¿Ã«ÃƒÃ‘
- *  KukaState = 2 -> ÂµÂ¥Â«ÃKUKAÂ§Ã¬Â¨ÃºÂ¤uÂ¥Ã³Â§Â¹Â¦Â¨
+ *  KukaState = 0 -> µ¥«İKUKA¨ì¹FÂ^¨ú¼v¹³ÂI
+ *	KukaState = 1 -> ¼v¹³Â^¨ú+«ººA¿ëÃÑ
+ *  KukaState = 2 -> µ¥«İKUKA§ì¨ú¤u¥ó§¹¦¨
  *  KukaState = -1 -> Close
  */
 	int KukaState = 0;
@@ -63,15 +63,15 @@ int WhichOneBeGrasp = 0;
 	int cmp;
 
 /*
- *   Â¥Ã¾Â°Ã¬Â°Ã‘Â¼Ã†
+ *   ¥ş°ì°Ñ¼Æ
  */
 	
 	int show_Mode = 0;
 	int CADModel_Number = 3;
 	float CADModel_Normal_radius = 7.5;
 	float CADModel_Voxel_radius = 5.0;//(1 = 1mm)
-	float Scene_Voxel_radius = 6.0;
-	float Scene_Normal_radius = 7.5;
+	float Scene_Voxel_radius = 6.0; //6.0
+	float Scene_Normal_radius = 7.5;//7.5;
 	float SACSegmentationFromNormal_radius = 12;
 	float HashMapSearch_Position = 20.0; // No use
 	float HashMapSearch_Rotation = 15.0; 
@@ -86,8 +86,8 @@ int WhichOneBeGrasp = 0;
 	float ObjectPose_EulerAngle[3];
 	bool _IsPoseEstimationDone = true;
 	std::vector< pcl::PointCloud<pcl::PointXYZ>::Ptr > DivideObject_ClusterPCDResult;
-	char *AllCADModel_pcdFileName[3] = { "VirtualObject_1_CADModel_PCD.pcd", "VirtualObject_3_CADModel_PCD.pcd", "VirtualObject_6_CADModel_PCD.pcd"};
-	char *CADModel_pcdFileName[1] = { "VirtualObject_1_CADModel_PCD.pcd"};
+	char *AllCADModel_pcdFileName[3] = { "mahjong_CAD_model.pcd", "VirtualObject_3_CADModel_PCD.pcd", "VirtualObject_6_CADModel_PCD.pcd"}; // VirtualObject_1_CADModel_PCD.pcd VirtualObject_3_CADModel_PCD VirtualObject_6_CADModel_PCD
+	char *CADModel_pcdFileName[1] = { "VirtualObject_1_CADModel_PCD.pcd"}; //VirtualObject_1_CADModel_PCD mahjong_CAD_model
 	int Grasp_ObjectType;
 	boost::shared_ptr<pcl::visualization::PCLVisualizer> RecognitionPCD_Viewer (new pcl::visualization::PCLVisualizer ("RecognitionPCD_Viewer"));
 	float segmentation_Range[3][2] =
@@ -113,8 +113,8 @@ int main()
 
 
 	StartSocket();
-	//Manual_Fun(); //Database_Fun():Â«Ã˜Â¥ÃŸDatabaseÂªÂºÂ«eÂ¸mÂ§@Â·~
-	//Manual_RecognitionFun(); // Manual_Recognition:Ã…ÂªÂ¨ÃºÂ¤@Â±iÂ¼vÂ¹Â³Â¿Ã«ÃƒÃ‘(Â¥]Â§tÂ«Ã˜Â¥ÃŸÂ¸ÃªÂ®Ã†Â®wÂ»PÂ¿Ã«ÃƒÃ‘)
+	//Manual_Fun(); //Database_Fun():«Ø¥ßDatabaseªº«e¸m§@·~
+	//Manual_RecognitionFun(); // Manual_Recognition:Åª¨ú¤@±i¼v¹³¿ëÃÑ(¥]§t«Ø¥ß¸ê®Æ®w»P¿ëÃÑ)
 	//Auto_RecognitionFun();
 
 	system("pause");
@@ -123,7 +123,7 @@ int main()
 
 
 /*
- *	CreateClient() : Â¶}Â±Ã’Â¥Â»Â¦aClinetÂ¡AÂ¨ÃƒÂ¸Ã²ServerÂ³sÂ½u
+ *	CreateClient() : ¶}±Ò¥»¦aClinet¡A¨Ã¸òServer³s½u
  */
 bool CreateClient(WgSocket &clientSocket)
 {
@@ -153,7 +153,7 @@ void StartSocket()
 		long ret_len;
 
 		/*
-		 *   Â¦Â¹Â°ÃÂ°Ã¬Â«Ã˜Â¥ÃŸÂ¸ÃªÂ®Ã†Â®w
+		 *   ¦¹°Ï°ì«Ø¥ß¸ê®Æ®w
 	     */
 		     compute_VotingEstimation_OffinePhase( CADModel_Number, AllCADModel_pcdFileName, CADModel_Normal_radius, HashMapSearch_Position, HashMapSearch_Rotation);
 		// Deliver message to Kuka server
@@ -214,7 +214,7 @@ void StartSocket()
 					while ( !_IsPoseEstimationDone  )		// capture image and pose estimation
 					{
 						/*
-						 *   Â¦Â¹Â°ÃÂ°Ã¬Ã‚^Â¨ÃºÂ¼vÂ¹Â³
+						 *   ¦¹°Ï°ìÂ^¨ú¼v¹³
 						 */
 						
 						 KinectObj.SceneToPCDProcessing();
@@ -249,7 +249,7 @@ void StartSocket()
 							 }
 						
 						/*
-						 *   Â¦Â¹Â°ÃÂ°Ã¬Â¿Ã«ÃƒÃ‘Â«ÂºÂºA
+						 *   ¦¹°Ï°ì¿ëÃÑ«ººA
 						 */						
 						 compute_VotingEstimation_OnlinePhase( RecognitionPCD_Viewer, PoseEstimationObj.getSceneCloud(), PoseEstimationObj.getSceneSegmentationCloud(), CADDatabaseObj.getCADModel_OriginalPCDVector(), CADModel_Number, Scene_Normal_radius , Clustter_Position, Cluster_Rotation, SamplingRate, Arm_PickPoint, TCP_PositionData, ObjectPose_EulerAngle, Grasp_ObjectType, _IsPoseEstimationDone);
 
@@ -315,17 +315,17 @@ void StartSocket()
 					if (  strncmp( Recieve_ServerData, "W", 1) == 0 && _IsPoseEstimationDone == true ) // G : Watting for pose estimation information
 					{
 						 
-						 //Â±NÂ²Ã„Â¤Â»Â¶bÂ¤Â¤Â¤ÃŸÃ‚I Â²Â¾Â¦Ãœ Â§Â¨Â¤Ã¶Â¤Â¤Â¤ÃŸÃ‚IÂªÂºÂ·LÂ½Ã•
-						 Xyzabc_CommandData[0] = Arm_PickPoint.x + 50;
-						 Xyzabc_CommandData[1] = Arm_PickPoint.y + 0 ;
-						 Xyzabc_CommandData[2] = Arm_PickPoint.z - 330; // -335
-						 Xyzabc_CommandData[3] =  ( ( ObjectPose_EulerAngle[2] * 180.0f / float (M_PI) ) - TCP_PositionData[3] ) / 2.0;
+						//±N²Ä¤»¶b¤¤¤ßÂI ²¾¦Ü §¨¤ö¤¤¤ßÂIªº·L½Õ
+						Xyzabc_CommandData[0] = Arm_PickPoint.x + 50;
+						Xyzabc_CommandData[1] = Arm_PickPoint.y + 0 ;
+						Xyzabc_CommandData[2] = Arm_PickPoint.z - 330; // -335
+						Xyzabc_CommandData[3] =  ( ( ObjectPose_EulerAngle[2] * 180.0f / float (M_PI) ) - TCP_PositionData[3] ) / 2.0;
 
-						 cout << "Grasp_ObjectType = " << Grasp_ObjectType << endl;		
-						 cout << "TCP_PositionData = " << TCP_PositionData[1] <<"       "<< TCP_PositionData[2] <<"        "<< TCP_PositionData[3] << endl;
-						 cout << "ObjectPose_EulerAngle = " << ObjectPose_EulerAngle[1] << "      " << ObjectPose_EulerAngle[2] << "        " << ObjectPose_EulerAngle[3] << endl;					
-						 cout << "Arm_PickPoint = " << Arm_PickPoint << endl;
-						 PrintPosition();
+						cout << "Grasp_ObjectType = " << Grasp_ObjectType << endl;		
+						cout << "TCP_PositionData = " << TCP_PositionData[1] <<"       "<< TCP_PositionData[2] <<"        "<< TCP_PositionData[3] << endl;
+						cout << "ObjectPose_EulerAngle = " << ObjectPose_EulerAngle[1] << "      " << ObjectPose_EulerAngle[2] << "        " << ObjectPose_EulerAngle[3] << endl;					
+						cout << "Arm_PickPoint = " << Arm_PickPoint << endl;
+						PrintPosition();
 						if ( Grasp_ObjectType == 0 || Grasp_ObjectType == 1 )
 						{
 
@@ -445,7 +445,7 @@ void StartSocket()
 				MySocket.Read( MySocket.getMySocket(), Recieve_ServerData, 1024, ret_len);
 				while ( KukaState == 2)
 				{
-					if (  strncmp( Recieve_ServerData, "CA", 2) == 0 ) // CA :Â¦AÃ‚^Â¨ÃºÂ·sÂ¼vÂ¹Â³
+					if (  strncmp( Recieve_ServerData, "CA", 2) == 0 ) // CA :¦AÂ^¨ú·s¼v¹³
 					{
 						 KukaState = 5;
 					}
@@ -460,7 +460,6 @@ void StartSocket()
 			{
 
 				cout <<"=========================== KukaState = 5 ============================= \n";
-				//PrintPosition();
 				sprintf( Sent_ClientData, "X%3.3fY%3.3fZ%3.3fA%3.3fB%3.3fC%3.3fS%dO%dE", Xyzabc_CommandData[0], Xyzabc_CommandData[1], Xyzabc_CommandData[2], Xyzabc_CommandData[3], Xyzabc_CommandData[4], Xyzabc_CommandData[5], KukaState, Grasp_ObjectType); 
 				MySocket.Write( MySocket.getMySocket(), Sent_ClientData, sizeof( Sent_ClientData ));
 
@@ -485,67 +484,39 @@ void StartSocket()
 						{
 							if (  strncmp( Recieve_ServerData, "C", 1) == 0 ) // C : Capture Image 
 							{
-									_IsPoseEstimationDone = false;
+								_IsPoseEstimationDone = false;
 
-										/*
-										 *   capture image
-										 */
-											 //KinectObj.SceneToPCDProcessing();
-											// yml2pcd( KinectObj.Scene_ymlName, "Scene.pcd", KinectObj, PoseEstimationObj.getSceneCloud(), segmentation_Range, 1, show_Mode);
-											 //delete [] KinectObj.Scene_ymlName;
+								/*
+								 *   capture image
+								 */
+									 //KinectObj.SceneToPCDProcessing();
+									// yml2pcd( KinectObj.Scene_ymlName, "Scene.pcd", KinectObj, PoseEstimationObj.getSceneCloud(), segmentation_Range, 1, show_Mode);
+									 //delete [] KinectObj.Scene_ymlName;
 
-											 KukaState = 7;
-											 cout <<"=========================== KukaState = 7 ============================= \n";
-											 cout << "Client_Socket : Sent capture Image Done to Server....\n";
-											 //PrintPosition();
+									 KukaState = 7;
+									 cout <<"=========================== KukaState = 7 ============================= \n";
+									 cout << "Client_Socket : Sent capture Image Done to Server....\n";
 
-											 sprintf( Sent_ClientData, "X%3.3fY%3.3fZ%3.3fA%3.3fB%3.3fC%3.3fS%dO%dE", Xyzabc_CommandData[0], Xyzabc_CommandData[1], Xyzabc_CommandData[2], Xyzabc_CommandData[3], Xyzabc_CommandData[4], Xyzabc_CommandData[5], KukaState, Grasp_ObjectType);	//put the object back
-											 MySocket.Write( MySocket.getMySocket(), Sent_ClientData, sizeof( Sent_ClientData ));
+									 sprintf( Sent_ClientData, "X%3.3fY%3.3fZ%3.3fA%3.3fB%3.3fC%3.3fS%dO%dE", Xyzabc_CommandData[0], Xyzabc_CommandData[1], Xyzabc_CommandData[2], Xyzabc_CommandData[3], Xyzabc_CommandData[4], Xyzabc_CommandData[5], KukaState, Grasp_ObjectType);	//put the object back
+									 MySocket.Write( MySocket.getMySocket(), Sent_ClientData, sizeof( Sent_ClientData ));
 
-											 cout << "Client_Socket : Waitting Kuka sent Start Pick before object signal....\n";
-											 MySocket.Read( MySocket.getMySocket(), Recieve_ServerData, 1024, ret_len);
-
+									 cout << "Client_Socket : Waitting Kuka sent Start Pick before object signal....\n";
+									 MySocket.Read( MySocket.getMySocket(), Recieve_ServerData, 1024, ret_len);
 
 
+									 while ( KukaState == 7 )
+									 {
+										 if (  strncmp( Recieve_ServerData, "G", 1) == 0 ) // G :Kuka Start to pick before object
+										 {
+											    break;
+										 }
+										 else 
+										 {
+												cout << "Client_Socket : Something wrong!!!\n";
+										 }
+										 Sleep(50);
+									 }
 
-
-											 while ( KukaState == 7 )
-											 {
-												 if (  strncmp( Recieve_ServerData, "G", 1) == 0 ) // G :Kuka Start to pick before object
-												 {
-													    break;
-												 }
-												 else 
-												 {
-														cout << "Client_Socket : Something wrong!!!\n";
-												 }
-												 Sleep(50);
-											 }
-										 
-											 
-											 /*voxelGrid_Filter( PoseEstimationObj.getSceneCloud(), PoseEstimationObj.getDownsampling_SceneCloud(), Scene_Voxel_radius );
-											 compute_SACSegmentationFromNormals( PoseEstimationObj.getDownsampling_SceneCloud(), PoseEstimationObj.getSceneSegmentationCloud(), SACSegmentationFromNormal_radius, 0);
-											 if ( PoseEstimationObj.getSceneSegmentationCloud()->empty() || PoseEstimationObj.getSceneSegmentationCloud()->size() < 100 )
-											 {
-												  KukaState = 0;
-												  break;
-											 }*/
-						
-											/*
-											 *   pose estimation
-											 */
-											
-											/*compute_VotingEstimation_OnlinePhase( RecognitionPCD_Viewer, PoseEstimationObj.getSceneCloud(), PoseEstimationObj.getSceneSegmentationCloud(), CADDatabaseObj.getCADModel_OriginalPCDVector(), CADModel_Number, Scene_Normal_radius , Clustter_Position, Cluster_Rotation, SamplingRate, Arm_PickPoint, TCP_PositionData, ObjectPose_EulerAngle, Grasp_ObjectType, _IsPoseEstimationDone);
-											if ( !_IsPoseEstimationDone )
-											{
-												 KukaState = 0;
-												 break;
-											}*/
-
-
-
-									
-														
 								if (  KukaState != 0 )
 								{
 									KukaState = 6;
@@ -558,9 +529,6 @@ void StartSocket()
 						}
 							Sleep(50);
 					}
-
-
-						
 
 				}
 				else 
@@ -735,537 +703,6 @@ void StartSocket()
 				break;
 			}
 		}
-
-		/*while( check_OK )
-		{
-			if ( KukaState == 0)
-			{
-				cout << "================================ KukaState = 0==========================\n";
-
-				sprintf( Sent_ClientData, "X%3.3fY%3.3fZ%3.3fA%3.3fB%3.3fC%3.3fS%dO%dE", Xyzabc_CommandData[0], Xyzabc_CommandData[1], Xyzabc_CommandData[2], Xyzabc_CommandData[3], Xyzabc_CommandData[4], Xyzabc_CommandData[5], KukaState, Grasp_ObjectType); 
-				MySocket.Write( MySocket.getMySocket(), Sent_ClientData, sizeof( Sent_ClientData ));
-				PrintPosition();
-
-				cout << "Client_Socket : Waitting Kuka move to capture image position....\n";
-				cout << "Client_Socket : Waitting Kuka sent TCP Position ....\n";
-				MySocket.Read( MySocket.getMySocket(), Recieve_ServerData, 1024, ret_len);
-				if (  strncmp( Recieve_ServerData, "I", 1) == 0 ) // I : Require now TCP Position 
-				{
-						sprintf( Sent_ClientData, "STCP_GetE" );
-						MySocket.Write( MySocket.getMySocket(), Sent_ClientData, sizeof( Sent_ClientData ));
-
-						MySocket.Read( MySocket.getMySocket(), Recieve_ServerData, 1024, ret_len);
-						decode_TCPPosition( Recieve_ServerData );
-
-						sprintf( Sent_ClientData, "STCP_DoneE" );
-						MySocket.Write( MySocket.getMySocket(), Sent_ClientData, sizeof( Sent_ClientData ));
-
-				}
-				else 
-				{
-					cout << "Client_Socket : Something wrong!!!\n";
-				}
-
-
-				MySocket.Read( MySocket.getMySocket(), Recieve_ServerData, 1024, ret_len);
-				while ( KukaState == 0 )
-				{
-					if (  strncmp( Recieve_ServerData, "C", 1) == 0 ) // C : Capture Image 
-					{
-						 KukaState = 1;
-					}
-					else 
-					{
-						cout << "Client_Socket : Something wrong!!!\n";
-					}
-					Sleep(50);
-				}
-			}
-			else if ( KukaState == 1)
-			{
-				
-					cout <<"=========================== KukaState = 1 : image catching and pose estimation============================= \n";
-					_IsPoseEstimationDone = false;
-					int CaptureImage_Again = 1;
-					int Times_Counter = 0;
-					while ( !_IsPoseEstimationDone  )
-					{
-						
-						 //   Â¦Â¹Â°ÃÂ°Ã¬Ã‚^Â¨ÃºÂ¼vÂ¹Â³
-						 
-						
-						 KinectObj.SceneToPCDProcessing();
-						 yml2pcd( KinectObj.Scene_ymlName, "Scene.pcd", KinectObj, PoseEstimationObj.getSceneCloud(), segmentation_Range, 1, show_Mode);
-						 delete [] KinectObj.Scene_ymlName;
-
-						 voxelGrid_Filter( PoseEstimationObj.getSceneCloud(), PoseEstimationObj.getDownsampling_SceneCloud(), Scene_Voxel_radius );
-						 compute_SACSegmentationFromNormals( PoseEstimationObj.getDownsampling_SceneCloud(), PoseEstimationObj.getSceneSegmentationCloud(), SACSegmentationFromNormal_radius, 0);
-						 if ( PoseEstimationObj.getSceneSegmentationCloud()->empty() || PoseEstimationObj.getSceneSegmentationCloud()->size() < 100 )
-						 {
-							 Times_Counter++;
-							 if ( Times_Counter < 3 )
-							 {
-								 continue;
-							 }
-							 else
-							 {
-								 cout << "System : Capture Image again...? ( Enter : 1 -> again, 0 -> end ) \n";
-								 cin >> CaptureImage_Again ;
-								 if ( CaptureImage_Again == 1)
-								 {
-										continue;
-								 }
-								 else
-								 {
-							 		 KukaState = -1;
-									 break;
-								 }
-							 }
-								 
-													
-							 }
-						
-						
-						  //  Â¦Â¹Â°ÃÂ°Ã¬Â¿Ã«ÃƒÃ‘Â«ÂºÂºA
-						 					
-						 compute_VotingEstimation_OnlinePhase( RecognitionPCD_Viewer, PoseEstimationObj.getSceneCloud(), PoseEstimationObj.getSceneSegmentationCloud(), CADDatabaseObj.getCADModel_OriginalPCDVector(), CADModel_Number, Scene_Normal_radius , Clustter_Position, Cluster_Rotation, SamplingRate, Arm_PickPoint, TCP_PositionData, ObjectPose_EulerAngle, Grasp_ObjectType, _IsPoseEstimationDone);
-
-					     if ( !_IsPoseEstimationDone )
-						 {
-							 Times_Counter++;
-							 if ( Times_Counter <= 3 )
-							 {
-								 continue;
-							 }
-							 else
-							 {
-								 cout << "System : Capture Image again...? ( Enter : 1 -> again, 0 -> end ) \n";
-								 cin >> CaptureImage_Again ;
-								 if ( CaptureImage_Again == 1)
-								 {
-										continue;
-								 }
-								 else
-								 {
-							 		 KukaState = -1;
-									 break;
-								 }
-							 }
-						 }
-					}
-
-				TransferDatatoMain(&PositionData_Main ,1);
-					
-				cout << "Client_Socket : Sent start pose estimation signal to Server....\n";
-				sprintf( Sent_ClientData, "X%3.3fY%3.3fZ%3.3fA%3.3fB%3.3fC%3.3fS%dO%dE", Xyzabc_CommandData[0], Xyzabc_CommandData[1], Xyzabc_CommandData[2], Xyzabc_CommandData[3], Xyzabc_CommandData[4], Xyzabc_CommandData[5], KukaState, Grasp_ObjectType);
-				MySocket.Write( MySocket.getMySocket(), Sent_ClientData, sizeof( Sent_ClientData ));
-						
-				cout << "Client_Socket : Waitting Kuka move to grasp initial position....\n";
-				MySocket.Read( MySocket.getMySocket(), Recieve_ServerData, 1024, ret_len);
-				
-				ObjectPose_EulerAngle[0] = PositionData_Main.BaseObject_EulerAngle[0];
-				ObjectPose_EulerAngle[1] = PositionData_Main.BaseObject_EulerAngle[1];
-				ObjectPose_EulerAngle[2] = PositionData_Main.BaseObject_EulerAngle[2];
-				Arm_PickPoint = PositionData_Main.Arm_PickPoint;
-				Grasp_ObjectType = PositionData_Main.Target;
-
-
-				while ( KukaState == 1 )	// point recalibration
-				{
-					if (  strncmp( Recieve_ServerData, "W", 1) == 0 && _IsPoseEstimationDone == true ) // G : Watting for pose estimation information
-					{
-						 
-						 //Â±NÂ²Ã„Â¤Â»Â¶bÂ¤Â¤Â¤ÃŸÃ‚I Â²Â¾Â¦Ãœ Â§Â¨Â¤Ã¶Â¤Â¤Â¤ÃŸÃ‚IÂªÂºÂ·LÂ½Ã•
-						 Xyzabc_CommandData[0] = Arm_PickPoint.x + 50;
-						 Xyzabc_CommandData[1] = Arm_PickPoint.y + 0 ;
-						 Xyzabc_CommandData[2] = Arm_PickPoint.z - 330; // -335
-						 Xyzabc_CommandData[3] =  ( ( ObjectPose_EulerAngle[2] * 180.0f / float (M_PI) ) - TCP_PositionData[3] ) / 2.0;
-
-						 cout << "Grasp_ObjectType = " << Grasp_ObjectType << endl;		
-						 cout << "TCP_PositionData = " << TCP_PositionData[1] <<"       "<< TCP_PositionData[2] <<"        "<< TCP_PositionData[3] << endl;
-						 cout << "ObjectPose_EulerAngle = " << ObjectPose_EulerAngle[1] << "      " << ObjectPose_EulerAngle[2] << "        " << ObjectPose_EulerAngle[3] << endl;					
-						 cout << "Arm_PickPoint = " << Arm_PickPoint << endl;
-
-						if ( Grasp_ObjectType == 0 || Grasp_ObjectType == 1 )
-						{
-
-							 if ( Grasp_ObjectType == 1 )
-							 {
-								   Xyzabc_CommandData[0] =  Xyzabc_CommandData[0] + 30;
-								   Xyzabc_CommandData[1] =  Xyzabc_CommandData[1] + 5;
-							 }
-							 else if ( Grasp_ObjectType == 0 )
-							 {
-								 Xyzabc_CommandData[1] = Xyzabc_CommandData[1] + 5;	
-								 Xyzabc_CommandData[0] =  Xyzabc_CommandData[0] + 30;
-							 }
-
-							if ( ( Xyzabc_CommandData[3] <= 0 && Xyzabc_CommandData[3] > -22.5 ) || ( Xyzabc_CommandData[3] <= -90 && Xyzabc_CommandData[3] > -112.5 ) )
-							{
-								if ( fabs( Xyzabc_CommandData[3] ) > 90 )
-								{
-									Xyzabc_CommandData[3] += 90;
-								}
-								Xyzabc_CommandData[3] = -( Xyzabc_CommandData[3] * 2 ) - 90;
-							}
-							else if ( ( Xyzabc_CommandData[3] <= -22.5 && Xyzabc_CommandData[3] > -45 ) || ( Xyzabc_CommandData[3] <= -112.5 && Xyzabc_CommandData[3] > -135 ) )
-							{
-								if ( fabs( Xyzabc_CommandData[3] ) > 90 )
-								{
-									Xyzabc_CommandData[3] += 90;
-								}
-								
-								Xyzabc_CommandData[3] = -( Xyzabc_CommandData[3] + 22.5 ) * 2 - 45;
-							}
-							else if ( ( Xyzabc_CommandData[3] <= -45 && Xyzabc_CommandData[3] > -67.5 ) || ( Xyzabc_CommandData[3] <= -135 && Xyzabc_CommandData[3] > -157.5 ) )
-							{
-								if ( fabs( Xyzabc_CommandData[3] ) > 90 )
-								{
-									Xyzabc_CommandData[3] += 90;
-								}
-								
-								Xyzabc_CommandData[0] += 20; 
-								Xyzabc_CommandData[3] = -( Xyzabc_CommandData[3] + 45 ) * 2;
-							}
-							else if ( ( Xyzabc_CommandData[3] <= -67.5 && Xyzabc_CommandData[3] >= -90 ) || ( Xyzabc_CommandData[3] <= -157.5 && Xyzabc_CommandData[3] > -180 ) )
-							{
-								if ( fabs( Xyzabc_CommandData[3] ) > 90 )
-								{
-									Xyzabc_CommandData[3] += 90;
-								}
-								
-								Xyzabc_CommandData[3] = -( Xyzabc_CommandData[3] + 67.5 ) * 2 + 45;
-								
-							}
-						}
-						else if ( Grasp_ObjectType == 2 )
-						{
-							Xyzabc_CommandData[0] =  Xyzabc_CommandData[0] + 30;
-							if ( ( Xyzabc_CommandData[3] <= 0 && Xyzabc_CommandData[3] > -22.5 ) || ( Xyzabc_CommandData[3] <= -90 && Xyzabc_CommandData[3] > -112.5 ) )
-							{
-								if ( fabs( Xyzabc_CommandData[3] ) > 90 )
-								{
-									Xyzabc_CommandData[3] += 90;
-								}
-								Xyzabc_CommandData[3] = -( Xyzabc_CommandData[3] * 2 ) - 45;
-							}
-							else if ( ( Xyzabc_CommandData[3] <= -22.5 && Xyzabc_CommandData[3] > -45 ) || ( Xyzabc_CommandData[3] <= -112.5 && Xyzabc_CommandData[3] > -135 ) )
-							{
-								if ( fabs( Xyzabc_CommandData[3] ) > 90 )
-								{
-									Xyzabc_CommandData[3] += 90;
-								}
-								
-								Xyzabc_CommandData[3] = -( Xyzabc_CommandData[3] + 22.5 ) * 2;
-							}
-							else if ( ( Xyzabc_CommandData[3] <= -45 && Xyzabc_CommandData[3] > -67.5 ) || ( Xyzabc_CommandData[3] <= -135 && Xyzabc_CommandData[3] > -157.5 ) )
-							{
-								if ( fabs( Xyzabc_CommandData[3] ) > 90 )
-								{
-									Xyzabc_CommandData[3] += 90;
-								}
-								
-								Xyzabc_CommandData[3] = -( Xyzabc_CommandData[3] + 45 ) * 2 + 45;
-							}
-							else if ( ( Xyzabc_CommandData[3] <= -67.5 && Xyzabc_CommandData[3] >= -90 ) || ( Xyzabc_CommandData[3] <= -157.5 && Xyzabc_CommandData[3] > -180 ) )
-							{
-								if ( fabs( Xyzabc_CommandData[3] ) > 90 )
-								{
-									Xyzabc_CommandData[3] += 90;
-								}
-								
-								Xyzabc_CommandData[3] = -( Xyzabc_CommandData[3] + 67.5 ) * 2 - 90;
-								
-							}
-						}
-
-						KukaState = 2;
-					}
-					else if ( _IsPoseEstimationDone == false )
-					{
-						KukaState = 8;
-					}
-					else 
-					{
-						cout << "Client_Socket : Something wrong!!!\n";
-					}
-					Sleep(50);
-				}
-
-			cout << "============= after calibration   ========"<< endl;
-			PrintPosition();
-
-			}
-			else if ( KukaState == 2)
-			{
-				cout <<"=========================== KukaState = 2  : waiting KUKA finish picking============================= \n";
-				cout << "Client_Socket : Sent Target Pose to Server....\n";
-				sprintf( Sent_ClientData, "X%3.3fY%3.3fZ%3.3fA%3.3fB%3.3fC%3.3fS%dO%dE", Xyzabc_CommandData[0], Xyzabc_CommandData[1], Xyzabc_CommandData[2], Xyzabc_CommandData[3], Xyzabc_CommandData[4], Xyzabc_CommandData[5], KukaState, Grasp_ObjectType);
-				MySocket.Write( MySocket.getMySocket(), Sent_ClientData, sizeof( Sent_ClientData ));
-				PrintPosition();
-				
-
-				cout << "Client_Socket : Waitting Kuka complete grasp target....\n";
-				MySocket.Read( MySocket.getMySocket(), Recieve_ServerData, 1024, ret_len);
-				while ( KukaState == 2)
-				{
-					if (  strncmp( Recieve_ServerData, "CA", 2) == 0 ) // CA :Â¦AÃ‚^Â¨ÃºÂ·sÂ¼vÂ¹Â³
-					{//--   5--->7
-						 KukaState = 5;
-					}
-					else 
-					{
-						cout << "Client_Socket : Something wrong!!!\n";
-					}
-					Sleep(50);
-				}
-			}
-			else if ( KukaState == 5 )
-			{
-
-				cout <<"=========================== KukaState = 5 ============================= \n";
-				sprintf( Sent_ClientData, "X%3.3fY%3.3fZ%3.3fA%3.3fB%3.3fC%3.3fS%dO%dE", Xyzabc_CommandData[0], Xyzabc_CommandData[1], Xyzabc_CommandData[2], Xyzabc_CommandData[3], Xyzabc_CommandData[4], Xyzabc_CommandData[5], KukaState, Grasp_ObjectType); 
-				MySocket.Write( MySocket.getMySocket(), Sent_ClientData, sizeof( Sent_ClientData ));
-
-				PrintPosition();
-
-				cout << "Client_Socket : Waitting Kuka move to capture image position....\n";
-				cout << "Client_Socket : Waitting Kuka sent TCP Position ....\n";
-				MySocket.Read( MySocket.getMySocket(), Recieve_ServerData, 1024, ret_len);
-				if (  strncmp( Recieve_ServerData, "I", 1) == 0 ) // I : Require new TCP Position 
-				{
-						sprintf( Sent_ClientData, "STCP_GetE" );
-						MySocket.Write( MySocket.getMySocket(), Sent_ClientData, sizeof( Sent_ClientData ));
-
-						MySocket.Read( MySocket.getMySocket(), Recieve_ServerData, 1024, ret_len);
-						decode_TCPPosition( Recieve_ServerData );
-
-						sprintf( Sent_ClientData, "STCP_DoneE" );
-						MySocket.Write( MySocket.getMySocket(), Sent_ClientData, sizeof( Sent_ClientData ));
-
-						MySocket.Read( MySocket.getMySocket(), Recieve_ServerData, 1024, ret_len);
-						while ( KukaState == 5 )
-						{
-							if (  strncmp( Recieve_ServerData, "C", 1) == 0 ) // C : Capture Image 
-							{
-									_IsPoseEstimationDone = false;
-
-										
-										 //   capture image
-										 
-											 KinectObj.SceneToPCDProcessing();
-											 yml2pcd( KinectObj.Scene_ymlName, "Scene.pcd", KinectObj, PoseEstimationObj.getSceneCloud(), segmentation_Range, 1, show_Mode);
-											 delete [] KinectObj.Scene_ymlName;
-
-											 KukaState = 7;
-											 cout << "Client_Socket : Sent capture Image Done to Server....\n";
-											 sprintf( Sent_ClientData, "X%3.3fY%3.3fZ%3.3fA%3.3fB%3.3fC%3.3fS%dO%dE", Xyzabc_CommandData[0], Xyzabc_CommandData[1], Xyzabc_CommandData[2], Xyzabc_CommandData[3], Xyzabc_CommandData[4], Xyzabc_CommandData[5], KukaState, Grasp_ObjectType);	//put the object back
-											 MySocket.Write( MySocket.getMySocket(), Sent_ClientData, sizeof( Sent_ClientData ));
-
-											 cout <<"=========================== KukaState = 7 ============================= \n";
-											 PrintPosition();
-
-											 cout << "Client_Socket : Waitting Kuka sent Start Pick before object signal....\n";
-											 MySocket.Read( MySocket.getMySocket(), Recieve_ServerData, 1024, ret_len);
-											 while ( KukaState == 7 )
-											 {
-												 if (  strncmp( Recieve_ServerData, "G", 1) == 0 ) // G :Kuka Start to pick before object
-												 {
-													    break;
-												 }
-												 else 
-												 {
-														cout << "Client_Socket : Something wrong!!!\n";
-												 }
-												 Sleep(50);
-											 }
-										 
-											 
-											 voxelGrid_Filter( PoseEstimationObj.getSceneCloud(), PoseEstimationObj.getDownsampling_SceneCloud(), Scene_Voxel_radius );
-											 compute_SACSegmentationFromNormals( PoseEstimationObj.getDownsampling_SceneCloud(), PoseEstimationObj.getSceneSegmentationCloud(), SACSegmentationFromNormal_radius, 0);
-											 if ( PoseEstimationObj.getSceneSegmentationCloud()->empty() || PoseEstimationObj.getSceneSegmentationCloud()->size() < 100 )
-											 {
-												  KukaState = 0;
-												  break;
-											 }
-						
-											
-											 //   pose estimation
-											 
-											
-											compute_VotingEstimation_OnlinePhase( RecognitionPCD_Viewer, PoseEstimationObj.getSceneCloud(), PoseEstimationObj.getSceneSegmentationCloud(), CADDatabaseObj.getCADModel_OriginalPCDVector(), CADModel_Number, Scene_Normal_radius , Clustter_Position, Cluster_Rotation, SamplingRate, Arm_PickPoint, TCP_PositionData, ObjectPose_EulerAngle, Grasp_ObjectType, _IsPoseEstimationDone);
-
-											if ( !_IsPoseEstimationDone )
-											{
-												 KukaState = 0;
-												 break;
-											}
-									
-														
-								if (  KukaState != 0 )
-								{
-									KukaState = 6;
-									break;
-								}
-						}
-						else 
-						{
-							cout << "Client_Socket : Something wrong!!!\n";
-						}
-							Sleep(50);
-					}
-
-
-						
-
-				}
-				else 
-				{
-					cout << "Client_Socket : Something wrong!!!\n";
-				}
-
-
-			}
-			else if ( KukaState == 6 )
-			{
-				cout <<"=========================== KukaState = 6 ============================= \n";		
-
-				cout << "Client_Socket : Sent start pose estimation information to Server....\n";
-				sprintf( Sent_ClientData, "X%3.3fY%3.3fZ%3.3fA%3.3fB%3.3fC%3.3fS%dO%dE", Xyzabc_CommandData[0], Xyzabc_CommandData[1], Xyzabc_CommandData[2], Xyzabc_CommandData[3], Xyzabc_CommandData[4], Xyzabc_CommandData[5], KukaState, Grasp_ObjectType);
-				MySocket.Write( MySocket.getMySocket(), Sent_ClientData, sizeof( Sent_ClientData ));
-
-				PrintPosition();
-
-				cout << "Client_Socket : Waitting Kuka move to grasp initial position....\n";
-				MySocket.Read( MySocket.getMySocket(), Recieve_ServerData, 1024, ret_len);
-
-				while ( KukaState == 6)
-				{
-					if (  strncmp( Recieve_ServerData, "W", 1) == 0 && _IsPoseEstimationDone == true ) // G : Watting for pose estimation information
-					{
-						 Xyzabc_CommandData[0] = Arm_PickPoint.x + 50;
-						 Xyzabc_CommandData[1] = Arm_PickPoint.y + 0 ;
-						 Xyzabc_CommandData[2] = Arm_PickPoint.z - 330; // -335
-						 Xyzabc_CommandData[3] =  ( ( ObjectPose_EulerAngle[2] * 180.0f / float (M_PI) ) - TCP_PositionData[3] ) / 2.0;
-
-						cout << "Grasp_ObjectType = " << Grasp_ObjectType << endl;		
-						cout << "TCP_PositionData = " << TCP_PositionData[1] <<"       "<< TCP_PositionData[2] <<"        "<< TCP_PositionData[3] << endl;
-						cout << "ObjectPose_EulerAngle = " << ObjectPose_EulerAngle[1] << "      " << ObjectPose_EulerAngle[2] << "        " << ObjectPose_EulerAngle[3] << endl;						 
-						
-						 
-						if ( Grasp_ObjectType == 0 || Grasp_ObjectType == 1 )
-						{
-							
-							if ( Grasp_ObjectType == 1 )
-							 {
-								   Xyzabc_CommandData[0] =  Xyzabc_CommandData[0] + 30;
-								   Xyzabc_CommandData[1] =  Xyzabc_CommandData[1] + 5;
-							 }
-							 else if ( Grasp_ObjectType == 0 )
-							 {
-								 Xyzabc_CommandData[1] = Xyzabc_CommandData[1] + 5;	
-								 Xyzabc_CommandData[0] =  Xyzabc_CommandData[0] + 30;
-							 }
-
-
-							if ( ( Xyzabc_CommandData[3] <= 0 && Xyzabc_CommandData[3] > -22.5 ) || ( Xyzabc_CommandData[3] <= -90 && Xyzabc_CommandData[3] > -112.5 ) )
-							{
-								if ( fabs( Xyzabc_CommandData[3] ) > 90 )
-								{
-									Xyzabc_CommandData[3] += 90;
-								}
-								Xyzabc_CommandData[3] = -( Xyzabc_CommandData[3] * 2 ) - 90;
-							}
-							else if ( ( Xyzabc_CommandData[3] <= -22.5 && Xyzabc_CommandData[3] > -45 ) || ( Xyzabc_CommandData[3] <= -112.5 && Xyzabc_CommandData[3] > -135 ) )
-							{
-								if ( fabs( Xyzabc_CommandData[3] ) > 90 )
-								{
-									Xyzabc_CommandData[3] += 90;
-								}
-								
-								Xyzabc_CommandData[3] = -( Xyzabc_CommandData[3] + 22.5 ) * 2 - 45;
-							}
-							else if ( ( Xyzabc_CommandData[3] <= -45 && Xyzabc_CommandData[3] > -67.5 ) || ( Xyzabc_CommandData[3] <= -135 && Xyzabc_CommandData[3] > -157.5 ) )
-							{
-								if ( fabs( Xyzabc_CommandData[3] ) > 90 )
-								{
-									Xyzabc_CommandData[3] += 90;
-								}
-								Xyzabc_CommandData[0] += 20; 
-								Xyzabc_CommandData[3] = -( Xyzabc_CommandData[3] + 45 ) * 2;
-							}
-							else if ( ( Xyzabc_CommandData[3] <= -67.5 && Xyzabc_CommandData[3] >= -90 ) || ( Xyzabc_CommandData[3] <= -157.5 && Xyzabc_CommandData[3] > -180 ) )
-							{
-								if ( fabs( Xyzabc_CommandData[3] ) > 90 )
-								{
-									Xyzabc_CommandData[3] += 90;
-								}
-								
-								Xyzabc_CommandData[3] = -( Xyzabc_CommandData[3] + 67.5 ) * 2 + 45;
-								
-							}
-						}
-
-
-						else if ( Grasp_ObjectType == 2 )
-						{
-							Xyzabc_CommandData[0] =  Xyzabc_CommandData[0] + 30;
-							if ( ( Xyzabc_CommandData[3] <= 0 && Xyzabc_CommandData[3] > -22.5 ) || ( Xyzabc_CommandData[3] <= -90 && Xyzabc_CommandData[3] > -112.5 ) )
-							{
-								if ( fabs( Xyzabc_CommandData[3] ) > 90 )
-								{
-									Xyzabc_CommandData[3] += 90;
-								}
-								Xyzabc_CommandData[3] = -( Xyzabc_CommandData[3] * 2 ) - 45;
-							}
-							else if ( ( Xyzabc_CommandData[3] <= -22.5 && Xyzabc_CommandData[3] > -45 ) || ( Xyzabc_CommandData[3] <= -112.5 && Xyzabc_CommandData[3] > -135 ) )
-							{
-								if ( fabs( Xyzabc_CommandData[3] ) > 90 )
-								{
-									Xyzabc_CommandData[3] += 90;
-								}
-								
-								Xyzabc_CommandData[3] = -( Xyzabc_CommandData[3] + 22.5 ) * 2;
-							}
-							else if ( ( Xyzabc_CommandData[3] <= -45 && Xyzabc_CommandData[3] > -67.5 ) || ( Xyzabc_CommandData[3] <= -135 && Xyzabc_CommandData[3] > -157.5 ) )
-							{
-								if ( fabs( Xyzabc_CommandData[3] ) > 90 )
-								{
-									Xyzabc_CommandData[3] += 90;
-								}
-								
-								Xyzabc_CommandData[3] = -( Xyzabc_CommandData[3] + 45 ) * 2 + 45;
-							}
-							else if ( ( Xyzabc_CommandData[3] <= -67.5 && Xyzabc_CommandData[3] >= -90 ) || ( Xyzabc_CommandData[3] <= -157.5 && Xyzabc_CommandData[3] > -180 ) )
-							{
-								if ( fabs( Xyzabc_CommandData[3] ) > 90 )
-								{
-									Xyzabc_CommandData[3] += 90;
-								}
-								
-								Xyzabc_CommandData[3] = -( Xyzabc_CommandData[3] + 67.5 ) * 2 - 90;
-								
-							}
-						}
-
-						 KukaState = 2;
-					}
-					else 
-					{
-						cout << "Client_Socket : Something wrong!!!\n";
-					}
-					Sleep(50);
-				}
-			}
-			else if ( KukaState == -1 )
-			{
-				cout << "Client_Socket : Exit\n";
-				sprintf( Sent_ClientData, "X%3.3fY%3.3fZ%3.3fA%3.3fB%3.3fC%3.3fS%dO%dE", Xyzabc_CommandData[0], Xyzabc_CommandData[1], Xyzabc_CommandData[2], Xyzabc_CommandData[3], Xyzabc_CommandData[4], Xyzabc_CommandData[5], KukaState, Grasp_ObjectType);
-				MySocket.Write( MySocket.getMySocket(), Sent_ClientData, sizeof( Sent_ClientData ));
-				break;
-			}
-		}*/
-
 	}
 	else
 	{
@@ -1311,18 +748,8 @@ void Auto_RecognitionFun()
 		 */
 		
 		compute_VotingEstimation_OnlinePhase( RecognitionPCD_Viewer, PoseEstimationObj.getSceneCloud(), PoseEstimationObj.getSceneSegmentationCloud(), CADDatabaseObj.getCADModel_OriginalPCDVector(), CADModel_Number, Scene_Normal_radius , Clustter_Position, Cluster_Rotation, SamplingRate, Arm_PickPoint, TCP_PositionData, ObjectPose_EulerAngle, Grasp_ObjectType, _IsPoseEstimationDone);
-		Xyzabc_CommandData[0] = Arm_PickPoint.x + 50;
-		Xyzabc_CommandData[1] = Arm_PickPoint.y + 0 ;
-		Xyzabc_CommandData[2] = Arm_PickPoint.z - 330; // -335
-		Xyzabc_CommandData[3] =  ( ( ObjectPose_EulerAngle[2] * 180.0f / float (M_PI) ) - TCP_PositionData[3] ) / 2.0;
-
-		cout << "Grasp_ObjectType = " << Grasp_ObjectType << endl;		
-		cout << "TCP_PositionData = " << TCP_PositionData[1] <<"       "<< TCP_PositionData[2] <<"        "<< TCP_PositionData[3] << endl;
-		cout << "ObjectPose_EulerAngle = " << ObjectPose_EulerAngle[1] << "      " << ObjectPose_EulerAngle[2] << "        " << ObjectPose_EulerAngle[3] << endl;					
-		cout << "Arm_PickPoint = " << Arm_PickPoint << endl;
-
-		PrintPosition();
-
+		//DisplyXYZPCDbyXYZRGB( CADDatabaseObj.getDownsampling_CADModelCloud(), point_color,  background_color,1);
+		
 		cout << " CaptureImage_Again : (1)->Yes, 0->No" << endl;
 		cin >> CaptureImage_Again;
 	}
@@ -1336,38 +763,22 @@ void Manual_RecognitionFun()
 	int CAD_Type = 1;
 
 	/*
-	 *  generaing database
+	 *   ¦¹°Ï°ì«Ø¥ß¸ê®Æ®w
 	 */
-	compute_VotingEstimation_OffinePhase( CADModel_Number, CADModel_pcdFileName, CADModel_Normal_radius, HashMapSearch_Position, HashMapSearch_Rotation);
-	//compute_VotingEstimation_OffinePhase( CADModel_Number, AllCADModel_pcdFileName, CADModel_Normal_radius, HashMapSearch_Position, HashMapSearch_Rotation);
+	//compute_VotingEstimation_OffinePhase( CADModel_Number, CADModel_pcdFileName, CADModel_Normal_radius, HashMapSearch_Position, HashMapSearch_Rotation);
 
 
 	/*
-	 *   pose estimation and recognition
+	 *   ¦¹°Ï°ìÂ^¨ú¼v¹³»P¿ëÃÑ
 	 */	
 
 	//KinectObj.SceneToPCDProcessing();
 	yml2pcd( "Scene.yml", "Scene.pcd", KinectObj, PoseEstimationObj.getSceneCloud(), segmentation_Range, 1, 1);
-	//yml2pcd( KinectObj.Scene_ymlName, "Scene.pcd", KinectObj, PoseEstimationObj.getSceneCloud(), segmentation_Range, 1, show_Mode);
-	
-
 	//delete [] KinectObj.Scene_ymlName;
 	voxelGrid_Filter( PoseEstimationObj.getSceneCloud(), PoseEstimationObj.getDownsampling_SceneCloud(), Scene_Voxel_radius );
 	compute_SACSegmentationFromNormals( PoseEstimationObj.getDownsampling_SceneCloud(), PoseEstimationObj.getSceneSegmentationCloud(), SACSegmentationFromNormal_radius, 0);			
-	//compute_VotingEstimation_OnlinePhase_VerifyPrecision( RecognitionPCD_Viewer, PoseEstimationObj.getSceneCloud(), PoseEstimationObj.getSceneSegmentationCloud(), CADDatabaseObj.getCADModel_OriginalPCDVector(), CADModel_Number, Scene_Normal_radius , Clustter_Position, Cluster_Rotation, SamplingRate, Arm_PickPoint, TCP_PositionData, _IsPoseEstimationDone, CAD_Type, CADDatabaseObj.getCADModelCloud());			
-	compute_VotingEstimation_OnlinePhase( RecognitionPCD_Viewer, PoseEstimationObj.getSceneCloud(), PoseEstimationObj.getSceneSegmentationCloud(), CADDatabaseObj.getCADModel_OriginalPCDVector(), CADModel_Number, Scene_Normal_radius , Clustter_Position, Cluster_Rotation, SamplingRate, Arm_PickPoint, TCP_PositionData, ObjectPose_EulerAngle, Grasp_ObjectType, _IsPoseEstimationDone);
+	compute_VotingEstimation_OnlinePhase_VerifyPrecision( RecognitionPCD_Viewer, PoseEstimationObj.getSceneCloud(), PoseEstimationObj.getSceneSegmentationCloud(), CADDatabaseObj.getCADModel_OriginalPCDVector(), CADModel_Number, Scene_Normal_radius , Clustter_Position, Cluster_Rotation, SamplingRate, Arm_PickPoint, TCP_PositionData, _IsPoseEstimationDone, CAD_Type, CADDatabaseObj.getCADModelCloud());			
 
-	Xyzabc_CommandData[0] = Arm_PickPoint.x + 50;
-	Xyzabc_CommandData[1] = Arm_PickPoint.y + 0 ;
-	Xyzabc_CommandData[2] = Arm_PickPoint.z - 330; // -335
-	Xyzabc_CommandData[3] =  ( ( ObjectPose_EulerAngle[2] * 180.0f / float (M_PI) ) - TCP_PositionData[3] ) / 2.0;
-
-	cout << "Grasp_ObjectType = " << Grasp_ObjectType << endl;		
-	cout << "TCP_PositionData = " << TCP_PositionData[1] <<"       "<< TCP_PositionData[2] <<"        "<< TCP_PositionData[3] << endl;
-	cout << "ObjectPose_EulerAngle = " << ObjectPose_EulerAngle[1] << "      " << ObjectPose_EulerAngle[2] << "        " << ObjectPose_EulerAngle[3] << endl;					
-	cout << "Arm_PickPoint = " << Arm_PickPoint << endl;
-
-	PrintPosition();
 }
 
 void Manual_Fun()
@@ -1378,30 +789,17 @@ void Manual_Fun()
 
 
 	/*
-	 *   æ­¤å€åŸŸå»ºç«‹è³‡æ–™åº«
+	 *   ¦¹°Ï°ì«Ø¥ß¸ê®Æ®wªº«e¸m§@·~
 	 */
-	ply_mesh2pcd("VirtualScene_2_theta_0_phi_0.ply", "VirtualScene_1_theta_0_phi_0.pcd");
-	LoadPCD("VirtualScene_1_theta_0_phi_0.pcd", PoseEstimationObj.getSceneCloud() );
-	//yml2pcd(  "VirtualScene_1_theta_0_phi_0.yml", "VirtualScene_1_theta_0_phi_0.pcd", KinectObj, PoseEstimationObj.getSceneCloud(), segmentation_Range, 1, show_Mode);
-	compute_VotingEstimation_OffinePhase( CADModel_Number, AllCADModel_pcdFileName, CADModel_Normal_radius, HashMapSearch_Position, HashMapSearch_Rotation);
+
 	
+	//ply_mesh2pcd("CADObject_1_theta_0_phi_0.ply", "CADObject_1_theta_0_phi_0.pcd");
+	LoadPCD("mahjong.pcd", CADDatabaseObj.getCADModelCloud() );
+	voxelGrid_Filter( CADDatabaseObj.getCADModelCloud(), CADDatabaseObj.getDownsampling_CADModelCloud(), 4.0 );
+	//DisplyXYZPCDbyXYZRGB( CADDatabaseObj.getDownsampling_CADModelCloud(), point_color,  background_color,1);
+	SavePCD(  CADDatabaseObj.getDownsampling_CADModelCloud(), "mahjong_CAD_model_all.pcd");
+	cout << "convert done" << endl;
 
-	voxelGrid_Filter( PoseEstimationObj.getSceneCloud(), PoseEstimationObj.getDownsampling_SceneCloud(), Scene_Voxel_radius );
-	//compute_SACSegmentationFromNormals( PoseEstimationObj.getDownsampling_SceneCloud(), PoseEstimationObj.getSceneSegmentationCloud(), SACSegmentationFromNormal_radius, 0);
-	compute_VotingEstimation_OnlinePhase( RecognitionPCD_Viewer, PoseEstimationObj.getSceneCloud(),  PoseEstimationObj.getDownsampling_SceneCloud(), CADDatabaseObj.getCADModel_OriginalPCDVector(), CADModel_Number, Scene_Normal_radius , Clustter_Position, Cluster_Rotation, SamplingRate, Arm_PickPoint, TCP_PositionData, ObjectPose_EulerAngle, Grasp_ObjectType, _IsPoseEstimationDone);
-	//DisplyXYZPCDbyXYZRGB( PoseEstimationObj.getSceneCloud(), point_color,  background_color,1);
-
-	Xyzabc_CommandData[0] = Arm_PickPoint.x + 50;
-	Xyzabc_CommandData[1] = Arm_PickPoint.y + 0 ;
-	Xyzabc_CommandData[2] = Arm_PickPoint.z - 330; // -335
-	Xyzabc_CommandData[3] =  ( ( ObjectPose_EulerAngle[2] * 180.0f / float (M_PI) ) - TCP_PositionData[3] ) / 2.0;
-
-	cout << "Grasp_ObjectType = " << Grasp_ObjectType << endl;		
-	cout << "TCP_PositionData = " << TCP_PositionData[1] <<"       "<< TCP_PositionData[2] <<"        "<< TCP_PositionData[3] << endl;
-	cout << "ObjectPose_EulerAngle = " << ObjectPose_EulerAngle[1] << "      " << ObjectPose_EulerAngle[2] << "        " << ObjectPose_EulerAngle[3] << endl;					
-	cout << "Arm_PickPoint = " << Arm_PickPoint << endl;
-
-	PrintPosition();
 }
 
 void decode_TCPPosition( char * encode_TCP )
@@ -1418,8 +816,8 @@ void decode_TCPPosition( char * encode_TCP )
 	size_t Y_count = strlen(Ydummy) - strlen(Zdummy) - 1;
 	size_t Z_count = strlen(Zdummy) - strlen(Adummy) - 1;
 	size_t A_count = strlen(Adummy) - strlen(Bdummy) - 1;
-	size_t B_count = strlen(Bdummy) - strlen(Cdummy) - 1;
 	size_t C_count = strlen(Cdummy) - strlen(Edummy) - 1;
+	size_t B_count = strlen(Bdummy) - strlen(Cdummy) - 1;
 
 	char *TCP_X = new char[X_count];
 	char *TCP_Y = new char[Y_count];

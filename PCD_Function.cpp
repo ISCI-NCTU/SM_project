@@ -23,9 +23,11 @@ PositionData PositionALL;
 PositionData Position1;
 PositionData Position2;
 PositionData Position3;
+PositionData Position4;
+PositionData Position5;
 
 int objectNum;
-int FinalPositionIndex[3];
+int FinalPositionIndex[5];
 
 
 void TransferDatatoMain(PositionData *target, int cmd)
@@ -38,9 +40,17 @@ void TransferDatatoMain(PositionData *target, int cmd)
 	{
 		*target = Position2;
 	}
-	else
+	else if(cmd == 3)
 	{
 		*target = Position3;
+	}
+	else if(cmd == 4)
+	{
+		*target = Position4;
+	}
+	else
+	{
+		*target = Position5;
 	}
 }
 
@@ -465,9 +475,12 @@ void compute_PPFNormals(pcl::PointCloud<pcl::PointXYZ>::Ptr &input_cloud, pcl::P
 	ne.setSearchMethod (tree);
 	ne.setRadiusSearch(neighbor_radius);
 	cout << "ComputeNormals : Computing nomals of input_cloud, waitting for a moment...\n";
+
 	pcl::PointCloud< pcl::Normal >::Ptr cloud_subsampled_normals (new pcl::PointCloud< pcl::Normal > ());
 	ne.compute(*cloud_subsampled_normals);
+	cout << "computing cloud_subsampled_normals \n";
 	concatenateFields (*input_cloud, *cloud_subsampled_normals, *output_normalCloud);
+	cout << "concatenateFields \n";
 	cout << "ComputeNormals : Done.\n";
 
 	// output_normalCloud->points.size () should have the same size as the input input_cloud->points.size ()*
@@ -558,6 +571,7 @@ void compute_VotingEstimation_OffinePhase(int CADModel_Number, char **CADModel_F
 	for (int i = 0; i < CADModel_Number; i++)
 	{
 		pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ> () );
+
 		reader.read( *(CADModel_FileName+i), *cloud);
 		cloud_models.push_back(cloud);
 		cout << "compute_VotingEstimation_OffinePhase : Model read : " << *(CADModel_FileName+i) << "\n";
@@ -570,6 +584,7 @@ void compute_VotingEstimation_OffinePhase(int CADModel_Number, char **CADModel_F
 		pcl::PointCloud< pcl::PointNormal >::Ptr cloud_model_normal (new pcl::PointCloud<pcl::PointNormal>);
 		compute_PPFNormals( cloud_models[i], cloud_model_normal, radius); 
 		cloud_models_with_normals.push_back(cloud_model_normal);
+
 		pcl::PointCloud< pcl::PPFSignature >::Ptr cloud_model_ppf (new pcl::PointCloud<pcl::PPFSignature> ());
 		pcl::PPFEstimation<pcl::PointNormal, pcl::PointNormal, pcl::PPFSignature> ppf_estimator;
 		ppf_estimator.setInputCloud (cloud_model_normal);
@@ -583,9 +598,6 @@ void compute_VotingEstimation_OffinePhase(int CADModel_Number, char **CADModel_F
 		pcl::PPFHashMapSearch::Ptr hashmap_search ( new pcl::PPFHashMapSearch ( HashMapSearch_Rotation / 180.0f * float (M_PI),   HashMapSearch_Position )); //0.05, 12.0
 		hashmap_search->setInputFeatureCloud (cloud_model_ppf);
 		hashmap_search_vector.push_back(hashmap_search);
-
-		
-	
 	}
 
 	cout << "compute_VotingEstimation_OffinePhase : Done!!\n";
@@ -676,11 +688,13 @@ void compute_VotingEstimation_OnlinePhase( boost::shared_ptr<pcl::visualization:
 		pcl::PointCloud<pcl::PointNormal> cloud_output_subsampled;//沒用到
 
 		//做投票跟Cluster
+		cout << "====================================================" << endl;
 		ppf_registration.align (cloud_output_subsampled);
+		cout << "====================================================" << endl;
 
-		pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_output_subsampled_xyz (new pcl::PointCloud<pcl::PointXYZ> ());//沒用到
-		for (size_t i = 0; i < cloud_output_subsampled.points.size (); ++i)//沒用到
-			cloud_output_subsampled_xyz->points.push_back ( pcl::PointXYZ (cloud_output_subsampled.points[i].x, cloud_output_subsampled.points[i].y, cloud_output_subsampled.points[i].z));//沒用到
+		//pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_output_subsampled_xyz (new pcl::PointCloud<pcl::PointXYZ> ());//沒用到
+		//for ( i = 0; i < cloud_output_subsampled.points.size (); ++i)//沒用到
+		//	cloud_output_subsampled_xyz->points.push_back ( pcl::PointXYZ (cloud_output_subsampled.points[i].x, cloud_output_subsampled.points[i].y, cloud_output_subsampled.points[i].z));//沒用到
 
 		cout << "compute_VotingEstimation_OnlinePhase : Showing model...\n";
 		Eigen::Matrix4f mat_1 = ppf_registration.results.at(0).pose.matrix();
@@ -810,41 +824,65 @@ void compute_VotingEstimation_OnlinePhase( boost::shared_ptr<pcl::visualization:
 		Find_GraspObject( TCP_Position, determine_GraspICP_Cloud, Camera_ObjectGraspPoint, WhichOneBeGrasp);
 			
 //here
-		
-		for(int i = 0; i < PositionALL.NoneZeroPosition; i++ )
+		int ii = 0;
+		for( ii = 0; ii < PositionALL.NoneZeroPosition; ii++ )
 		{
-			Camera_ObjectGraspPoint.x() = PositionALL.CameraPoint[i].x();
-			Camera_ObjectGraspPoint.y() = PositionALL.CameraPoint[i].y();
-			Camera_ObjectGraspPoint.z() = PositionALL.CameraPoint[i].z();
+			printf("%d........ : ",ii );
+			Camera_ObjectGraspPoint.x() = PositionALL.CameraPoint[ii].x();
+			Camera_ObjectGraspPoint.y() = PositionALL.CameraPoint[ii].y();
+			Camera_ObjectGraspPoint.z() = PositionALL.CameraPoint[ii].z();
 			
-			Base2Camera( determine_GraspICP_Cloud.at(i), TCP_Position, determine_GraspObjectMat.at(i), BaseObject_EulerAngle, Camera_ObjectGraspPoint.x(), Camera_ObjectGraspPoint.y(), Camera_ObjectGraspPoint.z(), Arm_PickPoint);
+			Base2Camera( determine_GraspICP_Cloud.at(ii), TCP_Position, determine_GraspObjectMat.at(ii), BaseObject_EulerAngle, Camera_ObjectGraspPoint.x(), Camera_ObjectGraspPoint.y(), Camera_ObjectGraspPoint.z(), Arm_PickPoint);
 			
-			if(i ==0)
+			if(ii == 0)
 			{
-				Position1.Target = model_type.at(PositionALL.IndexOfOriginalPosition[i]);
+				Position1.Target = model_type.at(PositionALL.IndexOfOriginalPosition[ii]);
 				Position1.Arm_PickPoint = Arm_PickPoint;
 				Position1.BaseObject_EulerAngle[0] = BaseObject_EulerAngle[0];
 				Position1.BaseObject_EulerAngle[1] = BaseObject_EulerAngle[1];
 				Position1.BaseObject_EulerAngle[2] = BaseObject_EulerAngle[2];
 				Position1.NoneZeroPosition = PositionALL.NoneZeroPosition;
+				printf(" done\n",ii );
 			}
-			else if(i == 1)
+			else if(ii == 1)
 			{
-				Position2.Target = model_type.at(PositionALL.IndexOfOriginalPosition[i]);
+				Position2.Target = model_type.at(PositionALL.IndexOfOriginalPosition[ii]);
 				Position2.Arm_PickPoint = Arm_PickPoint;
 				Position2.BaseObject_EulerAngle[0] = BaseObject_EulerAngle[0];
 				Position2.BaseObject_EulerAngle[1] = BaseObject_EulerAngle[1];
 				Position2.BaseObject_EulerAngle[2] = BaseObject_EulerAngle[2];
 				Position2.NoneZeroPosition = PositionALL.NoneZeroPosition;
+				printf(" done\n",ii );
 			}
-			else
+			else if(ii == 2)
 			{
-				Position3.Target = model_type.at(PositionALL.IndexOfOriginalPosition[i]);
+				Position3.Target = model_type.at(PositionALL.IndexOfOriginalPosition[ii]);
 				Position3.Arm_PickPoint = Arm_PickPoint;
 				Position3.BaseObject_EulerAngle[0] = BaseObject_EulerAngle[0];
 				Position3.BaseObject_EulerAngle[1] = BaseObject_EulerAngle[1];
 				Position3.BaseObject_EulerAngle[2] = BaseObject_EulerAngle[2];
 				Position3.NoneZeroPosition = PositionALL.NoneZeroPosition;
+				printf(" done\n",ii );
+			}
+			else if(ii == 3)
+			{
+				Position4.Target = model_type.at(PositionALL.IndexOfOriginalPosition[ii]);
+				Position4.Arm_PickPoint = Arm_PickPoint;
+				Position4.BaseObject_EulerAngle[0] = BaseObject_EulerAngle[0];
+				Position4.BaseObject_EulerAngle[1] = BaseObject_EulerAngle[1];
+				Position4.BaseObject_EulerAngle[2] = BaseObject_EulerAngle[2];
+				Position4.NoneZeroPosition = PositionALL.NoneZeroPosition;
+				printf(" done\n",ii );
+			}
+			else
+			{
+				Position5.Target = model_type.at(PositionALL.IndexOfOriginalPosition[ii]);
+				Position5.Arm_PickPoint = Arm_PickPoint;
+				Position5.BaseObject_EulerAngle[0] = BaseObject_EulerAngle[0];
+				Position5.BaseObject_EulerAngle[1] = BaseObject_EulerAngle[1];
+				Position5.BaseObject_EulerAngle[2] = BaseObject_EulerAngle[2];
+				Position5.NoneZeroPosition = PositionALL.NoneZeroPosition;
+				printf(" done\n",ii );
 			}
 		}
 
@@ -1181,9 +1219,9 @@ void Base2Camera( pcl::PointCloud<pcl::PointXYZ>::Ptr &input_cloud, float TCP_Po
 
 	cout << "RealWorld_Point = Arm_pickpoint = " << RealWorld_Point << endl;
 
-	int CompareX = RealWorld_Point.x + 50;
-	int CompareY = RealWorld_Point.y + 0 ;
-	int CompareZ = RealWorld_Point.z - 330; 
+	//int CompareX = RealWorld_Point.x + 50;
+	//int CompareY = RealWorld_Point.y + 0 ;
+	//double CompareZ = RealWorld_Point.z - 330; 
 }
 
 void ComputeEulerAngle(Eigen::Matrix4f &PoseMatrix, float EulerAngle[3] )
@@ -1273,6 +1311,20 @@ void Find_GraspObject( float TCP_Position[6], std::vector< pcl::PointCloud<pcl::
 	Position3.TCP_Position[4] = TCP_Position[4];
 	Position3.TCP_Position[5] = TCP_Position[5];
 
+	Position4.TCP_Position[0] = TCP_Position[0];
+	Position4.TCP_Position[1] = TCP_Position[1];
+	Position4.TCP_Position[2] = TCP_Position[2];
+	Position4.TCP_Position[3] = TCP_Position[3];
+	Position4.TCP_Position[4] = TCP_Position[4];
+	Position4.TCP_Position[5] = TCP_Position[5];
+
+	Position5.TCP_Position[0] = TCP_Position[0];
+	Position5.TCP_Position[1] = TCP_Position[1];
+	Position5.TCP_Position[2] = TCP_Position[2];
+	Position5.TCP_Position[3] = TCP_Position[3];
+	Position5.TCP_Position[4] = TCP_Position[4];
+	Position5.TCP_Position[5] = TCP_Position[5];
+
 	float Tool2TCP_14 = 234.5585;
 	float Tool2TCP_24 = 9.267568;
 	float Tool2TCP_34 = -41.98946;
@@ -1353,8 +1405,8 @@ void Find_GraspObject( float TCP_Position[6], std::vector< pcl::PointCloud<pcl::
 	float Xdiff;
 	int j = 1;
 	
-	Eigen::Matrix< float, 4, 1 > Final_Camera_ObjectGrasp[6];
-	memset(Final_Camera_ObjectGrasp, 0 ,6*sizeof( Eigen::Matrix< float, 4, 1 > ) );
+	Eigen::Matrix< float, 4, 1 > Final_Camera_ObjectGrasp[8];
+	memset(Final_Camera_ObjectGrasp, 0 ,8*sizeof( Eigen::Matrix< float, 4, 1 > ) );
 
 	Final_Camera_ObjectGrasp[0].x() = Temp_Camera_ObjectGrasp[0].x();
 	Final_Camera_ObjectGrasp[0].y() = Temp_Camera_ObjectGrasp[0].y();

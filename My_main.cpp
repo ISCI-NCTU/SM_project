@@ -1,3 +1,22 @@
+/**
+ * Copyright 2017 National Chiao Tung University, Intelligent System and Control Integration Lab
+ * Author: Cheng-Hei Wu 
+ * Maintainer : Howard Chen 
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
 #define  EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET 
 #include "PCD_Function.h"
 #include "VotingSchemePoseEstimation_Class.h"
@@ -29,7 +48,7 @@ Eigen::Matrix< float, 4, 1 > Camera_ObjectGraspPoint;
 int WhichOneBeGrasp = 0;
 
 /*
- *   物件
+ *   Objects
  */
 	WgSocket MySocket;
 	VotingSchemePoseEstimationClass PoseEstimationObj;
@@ -37,7 +56,7 @@ int WhichOneBeGrasp = 0;
 	KinectClass KinectObj;
 
 /*
- *   全域函數
+ *   Global variables/functions
  */
 	bool CreateClient(WgSocket &clientSocket);
 	static unsigned __stdcall StartSocket_Thread(void * pThis);
@@ -49,11 +68,11 @@ int WhichOneBeGrasp = 0;
 	void PrintPosition();
 
 /*
- *  ------------ Socket資料 -----------------
+ *  ------------ Socket data -----------------
  *
- *  KukaState = 0 -> 等待KUKA到達擷取影像點
- *	KukaState = 1 -> 影像擷取+姿態辨識
- *  KukaState = 2 -> 等待KUKA抓取工件完成
+ *  KukaState = 0 -> Wait for robot move to image capture position
+ *	KukaState = 1 -> Image capture and recognition
+ *  KukaState = 2 -> Wait for object pick&place
  *  KukaState = -1 -> Close
  */
 	int KukaState = 0;
@@ -63,7 +82,7 @@ int WhichOneBeGrasp = 0;
 	int cmp;
 
 /*
- *   全域參數
+ *   global variables
  */
 	
 	int show_Mode = 0;
@@ -113,8 +132,8 @@ int main()
 
 
 	StartSocket();
-	//Manual_Fun(); //Database_Fun():建立Database的前置作業
-	//Manual_RecognitionFun(); // Manual_Recognition:讀取一張影像辨識(包含建立資料庫與辨識)
+	//Manual_Fun(); //Database_Fun():Pre-processing for Database
+	//Manual_RecognitionFun(); // Manual_Recognition:Read a image including constructing database and recognition
 	//Auto_RecognitionFun();
 
 	system("pause");
@@ -123,7 +142,7 @@ int main()
 
 
 /*
- *	CreateClient() : 開啟本地Clinet，並跟Server連線
+ *	CreateClient() : Open socket client in local and connect with server
  */
 bool CreateClient(WgSocket &clientSocket)
 {
@@ -153,7 +172,7 @@ void StartSocket()
 		long ret_len;
 
 		/*
-		 *   此區域建立資料庫
+		 *   constructing 3D model database
 	     */
 		     compute_VotingEstimation_OffinePhase( CADModel_Number, AllCADModel_pcdFileName, CADModel_Normal_radius, HashMapSearch_Position, HashMapSearch_Rotation);
 		// Deliver message to Kuka server
@@ -214,7 +233,7 @@ void StartSocket()
 					while ( !_IsPoseEstimationDone  )		// capture image and pose estimation
 					{
 						/*
-						 *   此區域擷取影像
+						 *   Capture image
 						 */
 						
 						 KinectObj.SceneToPCDProcessing();
@@ -249,7 +268,7 @@ void StartSocket()
 							 }
 						
 						/*
-						 *   此區域辨識姿態
+						 *   Object pose estimation
 						 */						
 						 compute_VotingEstimation_OnlinePhase( RecognitionPCD_Viewer, PoseEstimationObj.getSceneCloud(), PoseEstimationObj.getSceneSegmentationCloud(), CADDatabaseObj.getCADModel_OriginalPCDVector(), CADModel_Number, Scene_Normal_radius , Clustter_Position, Cluster_Rotation, SamplingRate, Arm_PickPoint, TCP_PositionData, ObjectPose_EulerAngle, Grasp_ObjectType, _IsPoseEstimationDone);
 
@@ -315,7 +334,7 @@ void StartSocket()
 					if (  strncmp( Recieve_ServerData, "W", 1) == 0 && _IsPoseEstimationDone == true ) // G : Watting for pose estimation information
 					{
 						 
-						//將第六軸中心點 移至 夾爪中心點的微調
+						//Transformation offset from end-effector to TCP
 						Xyzabc_CommandData[0] = Arm_PickPoint.x + 50;
 						Xyzabc_CommandData[1] = Arm_PickPoint.y + 0 ;
 						Xyzabc_CommandData[2] = Arm_PickPoint.z - 330; // -335
@@ -445,7 +464,7 @@ void StartSocket()
 				MySocket.Read( MySocket.getMySocket(), Recieve_ServerData, 1024, ret_len);
 				while ( KukaState == 2)
 				{
-					if (  strncmp( Recieve_ServerData, "CA", 2) == 0 ) // CA :再擷取新影像
+					if (  strncmp( Recieve_ServerData, "CA", 2) == 0 ) // CA :Capture image again
 					{
 						 KukaState = 5;
 					}
@@ -763,13 +782,13 @@ void Manual_RecognitionFun()
 	int CAD_Type = 1;
 
 	/*
-	 *   此區域建立資料庫
+	 *   Constructing 3D model database
 	 */
 	//compute_VotingEstimation_OffinePhase( CADModel_Number, CADModel_pcdFileName, CADModel_Normal_radius, HashMapSearch_Position, HashMapSearch_Rotation);
 
 
 	/*
-	 *   此區域擷取影像與辨識
+	 *   Capture image and object pose estimation
 	 */	
 
 	//KinectObj.SceneToPCDProcessing();
@@ -789,7 +808,7 @@ void Manual_Fun()
 
 
 	/*
-	 *   此區域建立資料庫的前置作業
+	 *   Constructing 3D model database
 	 */
 
 	

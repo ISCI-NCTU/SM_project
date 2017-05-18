@@ -132,9 +132,9 @@ int main()
 
 
 	StartSocket();
-	//Manual_Fun(); //Database_Fun():Pre-processing for Database
-	//Manual_RecognitionFun(); // Manual_Recognition:Read a image including constructing database and recognition
-	//Auto_RecognitionFun();
+	//Manual_Fun(); //Database_Fun():Pre-processing for Database by using voxel grid filter
+	//Manual_RecognitionFun(); // Manual_Recognition:Read a image from file and constructing object database and recognition
+	//Auto_RecognitionFun();  // Capture an image from kinect and pose estimation
 
 	system("pause");
 	return 0;
@@ -752,7 +752,7 @@ void Auto_RecognitionFun()
 		
 
 		/*
-		 *   catch the image
+		 *   catpture the image
 		 */
 				KinectObj.SceneToPCDProcessing();
 				yml2pcd( KinectObj.Scene_ymlName, "Scene.pcd", KinectObj, PoseEstimationObj.getSceneCloud(), segmentation_Range, 1, show_Mode);
